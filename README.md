@@ -1,2 +1,0 @@
-# Darknes
-FGJ game project
