@@ -66,24 +66,29 @@ def main():
                       1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]))
 
     moveU, moveD, moveL, moveR = False, False, False, False
+    drawing = True
     
     while True:
-        clock.tick(30)
+        clock.tick(60)
         screen.fill((0,0,0))
         field.fill((0,0,0))
 ##        draw(field,walls)
-        draw(field,objects)
-        player.draw(field)
-        camOffSet[0],camOffSet[1] = 1280/2-player.x, 720/2-player.y
-        screen.blit(field,camOffSet)
-        pygame.display.flip()
+        if drawing:
+            draw(field,objects)
+            player.draw(field)
+            camOffSet[0],camOffSet[1] = 1280/2-player.x, 720/2-player.y
+            screen.blit(field,camOffSet)
+            pygame.display.flip()
+            drawing = False
+        else:
+            drawing = True
         for o in objects:
             if o.update(walls[0]):
                 objects.remove(o)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                break
+                return 0
             elif event.type == pygame.MOUSEBUTTONUP:
                 xpos, ypos = pygame.mouse.get_pos()
                 xpos, ypos = xpos-camOffSet[0], ypos-camOffSet[1]
@@ -107,9 +112,9 @@ def main():
                 elif event.key == pygame.K_RIGHT:
                     moveR = False
         neighbours = checkMove((player.x,player.y), walls[0].grid)
-        if player.step == 0 or player.step == 4:
+        if player.step == 0 or player.step == 8:
             player.step += 1
-            objects.append(Sound([player.x+(moveR-moveL)*15,player.y+(moveD-moveU)*15],2000))
+            objects.append(Sound([player.x+(moveR-moveL)*15,player.y+(moveD-moveU)*15],4000))
         player.move(moveR-moveL, moveD-moveU, neighbours)
                 
 main()
