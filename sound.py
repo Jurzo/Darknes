@@ -7,9 +7,9 @@ class Sound:
         self.angles = []
         self.lifespan = 0
         self.maxlifespan = lifespan
-        for i in range(0,64):
+        for i in range(0,128):
             self.points.append(self.loc)
-            self.angles.append(math.pi*2/64*i)
+            self.angles.append(math.pi*2/128*i)
 
     def update(self, grid):
         dead = False
@@ -27,7 +27,7 @@ class Sound:
                             stuck = True
 
             if not stuck:
-                self.points[x] = [self.points[x][0]+10*math.cos(self.angles[x]), self.points[x][1]+10*math.sin(self.angles[x])]
+                self.points[x] = [self.points[x][0]+5*math.cos(self.angles[x]), self.points[x][1]+5*math.sin(self.angles[x])]
 
         return dead
 
