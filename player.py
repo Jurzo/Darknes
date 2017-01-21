@@ -3,11 +3,11 @@ import pygame
 class Player:
     def __init__(self, pos):
         self.x, self.y = pos
-        self.speed = 5
+        self.speed = 2
         self.gridLocation = int(self.x/80),int(self.y/80)
-        self.step = 19
-        self.stepSize = 20
-        self.rest = 20
+        self.step = 39
+        self.stepSize = 40
+        self.rest = 40
         self.moving = False
 
     def move(self, moveX, moveY, neighbours):
@@ -40,7 +40,7 @@ class Player:
             self.moving = True
         else:
             self.moving = False
-            if self.rest > 20:
+            if self.rest > 40:
                 self.step = self.stepSize-1
 
 
