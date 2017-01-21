@@ -1,33 +1,31 @@
 import math, pygame
 
 class Sound:
-    def __init__(self, loc, lifespan):
+    def __init__(self, loc, lifespan=2000, stop_at = [1,5]):
         self.loc = loc
         self.points = []
         self.angles = []
         self.lifespan = 0
         self.maxlifespan = lifespan
+        self.stop_at = stop_at
         for i in range(0,64):
             self.points.append(self.loc)
             self.angles.append(math.pi*2/64*i)
 
-    def update(self, grid):
+    def update(self, level, block_size):
         dead = False
-        for x in range(0,len(self.points)):
+        for i, point in enumerate(self.points):
             stuck = False
             if self.lifespan == self.maxlifespan:
                 dead = True
             else:
                 self.lifespan += 1
-
-            for j in range(0,9):
-                for i in range(0,16):
-                    if grid.grid[i + j*16] == 1:
-                        if i*80 <= self.points[x][0] <= (i+1)*80 and j*80 <= self.points[x][1] <= (j+1)*80:
-                            stuck = True
+            x, y = (int(point[0] / block_size), int(point[1] / block_size))
+            if level.grid[y][x] in self.stop_at:
+                stuck = True
 
             if not stuck:
-                self.points[x] = [self.points[x][0]+10*math.cos(self.angles[x]), self.points[x][1]+10*math.sin(self.angles[x])]
+                self.points[i] = [point[0]+10*math.cos(self.angles[i]), point[1]+10*math.sin(self.angles[i])]
 
         return dead
 
