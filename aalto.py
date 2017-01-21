@@ -1,6 +1,5 @@
 import pygame, math
 from player import Player
-from sound import Sound
 
 class Map:
     def __init__(self,grid):
@@ -14,7 +13,44 @@ class Map:
             for i in range(self.width):
                 if self.grid[i +j*self.width] == 1:
                     rect = self.size*i, self.size*j, self.size, self.size
-                    pygame.draw.rect(screen, (255,255,255), rect)   
+                    pygame.draw.rect(screen, (255,255,255), rect)
+
+        
+class Sound:
+    def __init__(self, loc, lifespan):
+        self.loc = loc
+        self.points = []
+        self.angles = []
+        self.lifespan = 0
+        self.maxlifespan = lifespan
+        for i in range(0,64):
+            self.points.append(self.loc)
+            self.angles.append(math.pi*2/64*i)
+
+    def update(self, grid):
+        dead = False
+        for x in range(0,len(self.points)):
+            stuck = False
+            if self.lifespan == self.maxlifespan:
+                dead = True
+            else:
+                self.lifespan += 1
+
+            for j in range(0,9):
+                for i in range(0,16):
+                    if grid.grid[i + j*16] == 1:
+                        if i*80 <= self.points[x][0] <= (i+1)*80 and j*80 <= self.points[x][1] <= (j+1)*80:
+                            stuck = True
+
+            if not stuck:
+                self.points[x] = [self.points[x][0]+10*math.cos(self.angles[x]), self.points[x][1]+10*math.sin(self.angles[x])]
+
+        return dead
+
+
+    def draw(self, screen):
+        color = 255-int(255/self.maxlifespan*self.lifespan)
+        pygame.draw.aalines(screen, (color,color,color), True, self.points)    
 
 def draw(screen, objects = None):
     if objects:
@@ -107,8 +143,7 @@ def main():
                 elif event.key == pygame.K_RIGHT:
                     moveR = False
         neighbours = checkMove((player.x,player.y), walls[0].grid)
-        if player.step == 0 or player.step == 4:
-            player.step += 1
+        if player.step == 0:
             objects.append(Sound([player.x+(moveR-moveL)*15,player.y+(moveD-moveU)*15],2000))
         player.move(moveR-moveL, moveD-moveU, neighbours)
                 

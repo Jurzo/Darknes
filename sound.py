@@ -1,35 +1,35 @@
+import math, pygame
+
 class Sound:
-    def __init__(self, loc, lifespan, size=160):
+    def __init__(self, loc, lifespan):
         self.loc = loc
         self.points = []
         self.angles = []
         self.lifespan = 0
         self.maxlifespan = lifespan
-        self.blockSize = size
-        for i in range(0,32):
+        for i in range(0,64):
             self.points.append(self.loc)
-            self.angles.append(math.pi*2/32*i)
+            self.angles.append(math.pi*2/64*i)
 
-    def update(self, grid, gridSize):
-        faded = False
+    def update(self, grid):
+        dead = False
         for x in range(0,len(self.points)):
             stuck = False
             if self.lifespan == self.maxlifespan:
-                faded = True
+                dead = True
             else:
                 self.lifespan += 1
 
-            for j in range(0,gridSize[1]):
-                for i in range(0,gridSize[0]):
-                    if grid.grid[i + j*gridSize[0]] == 1:
-                        if i*self.blockSize <= self.points[x][0] <= (i+1)*self.blockSize
-                        and j*self.blockSize <= self.points[x][1] <= (j+1)*self.blockSize:
+            for j in range(0,9):
+                for i in range(0,16):
+                    if grid.grid[i + j*16] == 1:
+                        if i*80 <= self.points[x][0] <= (i+1)*80 and j*80 <= self.points[x][1] <= (j+1)*80:
                             stuck = True
 
             if not stuck:
-                self.points[x] = [self.points[x][0]+5*math.cos(self.angles[x]), self.points[x][1]+5*math.sin(self.angles[x])]
+                self.points[x] = [self.points[x][0]+10*math.cos(self.angles[x]), self.points[x][1]+10*math.sin(self.angles[x])]
 
-        return faded
+        return dead
 
 
     def draw(self, screen):
